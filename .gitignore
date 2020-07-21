@@ -1,6 +1,7 @@
 .vscode
 __pycache__
 venv
+env
 
 # OS generated files #
 ######################
@@ -11,3 +12,8 @@ venv
 .Trashes
 ehthumbs.db
 Thumbs.db
+.idea/
+
+projects/02_trivia_api/starter/backend/reset_db.sh
+
+projects/02_trivia_api/starter/backend/run_tests.sh
