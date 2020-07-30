@@ -12,7 +12,7 @@ class QuizView extends Component {
       quizCategory: null,
       previousQuestions: [],
       showAnswer: false,
-      categories: [],
+      categories: {},
       numCorrect: 0,
       currentQuestion: {},
       guess: "",
@@ -26,9 +26,11 @@ class QuizView extends Component {
       type: "GET",
       success: (result) => {
         this.setState({ categories: result.categories });
+        return;
       },
       error: (error) => {
         alert("Unable to load categories. Please try your request again");
+        return;
       },
     });
   }
@@ -48,7 +50,7 @@ class QuizView extends Component {
     }
 
     $.ajax({
-      url: "/next-question",
+      url: "/quizzes", //TODO: update request URL
       type: "POST",
       dataType: "json",
       contentType: "application/json",
@@ -68,9 +70,11 @@ class QuizView extends Component {
           guess: "",
           forceEnd: result.question ? false : true,
         });
+        return;
       },
       error: (error) => {
         alert("Unable to load question. Please try your request again");
+        return;
       },
     });
   };
@@ -107,15 +111,17 @@ class QuizView extends Component {
           <div className="play-category" onClick={this.selectCategory}>
             ALL
           </div>
-          {this.state.categories.map((c) => {
+          {Object.keys(this.state.categories).map((id) => {
             return (
               <div
-                key={c.id}
-                value={c.id}
+                key={id}
+                value={id}
                 className="play-category"
-                onClick={() => this.selectCategory({ type: c.type, id: c.id })}
+                onClick={() =>
+                  this.selectCategory({ type: this.state.categories[id], id })
+                }
               >
-                {c.id}
+                {this.state.categories[id]}
               </div>
             );
           })}

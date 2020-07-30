@@ -12,7 +12,7 @@ class QuestionView extends Component {
       questions: [],
       page: 1,
       totalQuestions: 0,
-      categories: [],
+      categories: {},
       currentCategory: null,
     };
   }
@@ -23,10 +23,9 @@ class QuestionView extends Component {
 
   getQuestions = () => {
     $.ajax({
-      url: `/questions?page=${this.state.page}`,
+      url: `/questions?page=${this.state.page}`, //TODO: update request URL
       type: "GET",
       success: (result) => {
-        console.log(result);
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -86,7 +85,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions/search`,
+      url: `/questions`, //TODO: update request URL
       type: "POST",
       dataType: "json",
       contentType: "application/json",
@@ -129,8 +128,6 @@ class QuestionView extends Component {
   };
 
   render() {
-    const { categories } = this.state;
-
     return (
       <div className="question-view">
         <div className="categories-list">
@@ -142,15 +139,18 @@ class QuestionView extends Component {
             Categories
           </h2>
           <ul>
-            {categories.map((category) => (
+            {Object.keys(this.state.categories).map((id) => (
               <li
-                key={category.id}
+                key={id}
                 onClick={() => {
-                  this.getByCategory(category.id);
+                  this.getByCategory(id);
                 }}
               >
-                {category.type}
-                <img className="category" src={`${category.type}.svg`} />
+                {this.state.categories[id]}
+                <img
+                  className="category"
+                  src={`${this.state.categories[id]}.svg`}
+                />
               </li>
             ))}
           </ul>
@@ -163,7 +163,7 @@ class QuestionView extends Component {
               key={q.id}
               question={q.question}
               answer={q.answer}
-              category={categories.find((c) => c.id === q.category)}
+              category={this.state.categories[q.category]}
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />

@@ -18,6 +18,13 @@ def get_pages_n(data_len):
     )
 
 
+def get_formatted_categories(categories):
+    formatted_categories = {}
+    for category in categories:
+        formatted_categories[category.id] = category.type
+    return formatted_categories
+
+
 def get_page(data, page, page_size):
     if data is None:
         return []
@@ -48,11 +55,11 @@ def create_app(test_config=None):
     @app.route("/categories")
     def get_categories():
         categories = Category.query.order_by(Category.id).all()
-
+        formatted_categories = get_formatted_categories(categories)
         return jsonify(
             {
                 "success": True,
-                "categories": [category.format() for category in categories],
+                "categories": formatted_categories,
                 "total_categories": len(categories),
             }
         )
@@ -64,12 +71,12 @@ def create_app(test_config=None):
         page = request.args.get("page", 1, type=int)
         questions_page = get_page(all_questions, page, QUESTIONS_PER_PAGE)
         res_questions = [question.format() for question in questions_page]
-        res_categories = [category.format() for category in categories]
+        formatted_categories = get_formatted_categories(categories)
         return jsonify(
             {
                 "success": True,
                 "questions": res_questions,
-                "categories": res_categories,
+                "categories": formatted_categories,
                 "total_questions": len(all_questions),
             }
         )
@@ -134,7 +141,7 @@ def create_app(test_config=None):
         res = [question.format() for question in questions_page]
         return jsonify({"success": True, "questions": res, "total_questions": len(res)})
 
-    @app.route("/next-question", methods=["POST"])
+    @app.route("/quizzes", methods=["POST"])
     def get_next_question():
         quiz_category = request.get_json().get("quiz_category")
         previous_questions_ids = request.get_json().get("previous_questions")
@@ -143,9 +150,14 @@ def create_app(test_config=None):
             abort(400)
 
         prev_questions_ids = [q_id for q_id in previous_questions_ids]
-        cat_questions = Question.query.filter(
-            Question.category == quiz_category["id"]
-        ).all()
+
+        cat_questions = None
+        if quiz_category["id"] == 0:
+            cat_questions = Question.query.all()
+        else:
+            cat_questions = Question.query.filter(
+                Question.category == quiz_category["id"]
+            ).all()
         questions = [q for q in cat_questions if q.id not in prev_questions_ids]
 
         if len(questions) <= 0:

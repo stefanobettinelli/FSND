@@ -11,19 +11,21 @@ class FormView extends Component {
       answer: "",
       difficulty: 1,
       category: 1,
-      categories: [],
+      categories: {},
     };
   }
 
   componentDidMount() {
     $.ajax({
-      url: `/categories`,
+      url: `/categories`, //TODO: update request URL
       type: "GET",
       success: (result) => {
         this.setState({ categories: result.categories });
+        return;
       },
       error: (error) => {
         alert("Unable to load categories. Please try your request again");
+        return;
       },
     });
   }
@@ -47,9 +49,11 @@ class FormView extends Component {
       crossDomain: true,
       success: (result) => {
         document.getElementById("add-question-form").reset();
+        return;
       },
       error: (error) => {
         alert("Unable to add question. Please try your request again");
+        return;
       },
     });
   };
@@ -88,10 +92,10 @@ class FormView extends Component {
           <label>
             Category
             <select name="category" onChange={this.handleChange}>
-              {this.state.categories.map((c) => {
+              {Object.keys(this.state.categories).map((id) => {
                 return (
-                  <option key={c.id} value={c.id}>
-                    {c.id}
+                  <option key={id} value={id}>
+                    {this.state.categories[id]}
                   </option>
                 );
               })}

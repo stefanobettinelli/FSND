@@ -119,7 +119,7 @@ class TriviaTestCase(unittest.TestCase):
         q_id = -1
         previous_questions = []
         res = self.client().post(
-            "/next-question",
+            "/quizzes",
             json={
                 "previous_questions": previous_questions,
                 "quiz_category": {"type": "Sports", "id": 6},
@@ -135,7 +135,7 @@ class TriviaTestCase(unittest.TestCase):
         previous_questions.append(q_id)
 
         res = self.client().post(
-            "/next-question",
+            "/quizzes",
             json={
                 "previous_questions": previous_questions,
                 "quiz_category": {"type": "Sports", "id": 6},
@@ -151,7 +151,7 @@ class TriviaTestCase(unittest.TestCase):
         previous_questions.append(q_id)
 
         res = self.client().post(
-            "/next-question",
+            "/quizzes",
             json={
                 "previous_questions": previous_questions,
                 "quiz_category": {"type": "Sports", "id": 6},
