@@ -12,8 +12,11 @@ env
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.iml
 .idea/
 
 projects/02_trivia_api/starter/backend/reset_db.sh
 
 projects/02_trivia_api/starter/backend/run_tests.sh
+
+projects/03_coffee_shop_full_stack/starter_code/backend/src/database/database.db
